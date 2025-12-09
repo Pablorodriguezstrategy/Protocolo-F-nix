@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PROTOCOLO FÉNIX | Reinicio de Sistema</title>
+    <style>
+        :root {
+            --bg-color: #050505; /* Negro Profundo Industrial */
+            --card-bg: #111111; /* Gris Carbón */
+            --text-color: #e0e0e0;
+            --accent-color: #D90429; /* ROJO SANGRE (Marca Unificada) */
+            --accent-glow: rgba(217, 4, 41, 0.4);
+            --success-color: #00E676; /* Verde Táctico */
+            --border-color: #222;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            /* Fondo sutil tipo fibra de carbono/industrial */
+            background-image: repeating-linear-gradient(45deg, #0a0a0a 0, #0a0a0a 1px, transparent 0, transparent 50%);
+            background-size: 20px 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            padding-bottom: 100px;
+        }
+
+        /* HEADER */
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: #fff;
+            margin: 0;
+            text-transform: uppercase;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px var(--accent-color); /* Glow Rojo */
+        }
+        
+        .status-badge {
+            background: rgba(217, 4, 41, 0.15);
+            color: var(--accent-color);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            border: 1px solid var(--accent-color);
+            display: inline-block;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        /* CONTEXTO / LEYENDA */
+        .context-legend {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-left: 4px solid var(--accent-color);
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #bbb;
+        }
+        .context-legend strong { color: #fff; }
+        .context-title {
+            color: var(--accent-color);
+            font-weight: bold;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        /* MISIÓN BRIEFING (DESPLEGABLE) */
+        .mission-box {
+            background: #111;
+            border: 1px solid #222;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .mission-head {
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: bold;
+            color: #666;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            background: #0e0e0e;
+            transition: color 0.3s;
+        }
+        .mission-head:hover { color: #fff; }
+        
+        .mission-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            padding: 0 15px;
+            color: #999;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            border-top: 1px solid #222;
+        }
+        .mission-body.open {
+            max-height: 500px;
+            padding-bottom: 15px;
+            padding-top: 10px;
+        }
+
+        /* AUDIO PLAYER */
+        .audio-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.7);
+        }
+        .audio-label { 
+            font-size: 0.8rem; 
+            font-weight: bold; 
+            margin-bottom: 10px; 
+            display: block; 
+            color: var(--accent-color); 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        /* Estilo sutil para reproductor */
+        audio { width: 100%; height: 35px; margin-top: 5px; outline: none; filter: invert(0.9) sepia(1) saturate(0) hue-rotate(0deg); }
+
+        /* PROTOCOLO WIZARD */
+        .protocol-container {
+            position: relative;
+            min-height: 400px;
+        }
+
+        .step-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px;
+            display: none; /* Oculto por defecto */
+            animation: slideIn 0.4s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            position: relative;
+        }
+        .step-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, var(--card-bg), var(--accent-color), var(--card-bg));
+            opacity: 0.5;
+        }
+        .step-card.active { display: block; }
+
+        @keyframes slideIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 10px;
+        }
+        .step-number { font-size: 3rem; font-weight: 900; color: #1a1a1a; -webkit-text-stroke: 1px var(--accent-color); line-height: 1; }
+        .step-title { font-size: 1.1rem; font-weight: bold; text-transform: uppercase; text-align: right; color: #fff; letter-spacing: 1px; }
+
+        .instruction-text { font-size: 1rem; line-height: 1.5; margin-bottom: 25px; color: #ddd; }
+        .instruction-text strong { color: var(--accent-color); }
+
+        /* CONTROLES DEL PASO */
+        .action-btn {
+            background: linear-gradient(135deg, #a3001b 0%, #d90429 100%);
+            color: #fff;
+            border: none;
+            width: 100%;
+            padding: 18px;
+            font-size: 1.1rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(217, 4, 41, 0.3);
+            transition: all 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 1px;
+        }
+        .action-btn:active { transform: scale(0.98); box-shadow: 0 0 10px rgba(217, 4, 41, 0.5); }
+        .action-btn.secondary { background: #222; color: #aaa; box-shadow: none; border: 1px solid #333; }
+        .action-btn.secondary:hover { color: #fff; border-color: #555; }
+
+        /* ELEMENTOS ESPECÍFICOS */
+        .timer-box { text-align: center; margin: 20px 0; }
+        .big-time { font-size: 4rem; font-weight: 700; color: #fff; font-family: monospace; text-shadow: 0 0 20px rgba(255,255,255,0.1); }
+        
+        .breath-visual {
+            width: 150px; height: 150px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            margin: 20px auto;
+            opacity: 0.2;
+            transform: scale(1);
+            box-shadow: 0 0 30px var(--accent-color);
+        }
+
+        .supplies-list { text-align: left; background: #0f0f0f; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #222; }
+        .supply-item { display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #222; cursor: pointer; transition: background 0.2s; }
+        .supply-item:last-child { border-bottom: none; }
+        .supply-item:hover { background: #1a1a1a; }
+        .supply-item.checked { opacity: 0.3; text-decoration: line-through; }
+        .supply-check { width: 20px; height: 20px; border: 2px solid #555; margin-right: 15px; border-radius: 4px; }
+        .supply-item.checked .supply-check { background: var(--accent-color); border-color: var(--accent-color); }
+
+        /* DESCARGA */
+        .download-link {
+            display: block;
+            text-align: center;
+            margin-top: 40px;
+            color: #666;
+            text-decoration: none;
+            font-size: 0.8rem;
+            border: 1px solid #333;
+            padding: 15px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .download-link:hover { border-color: var(--accent-color); color: #fff; background: rgba(217, 4, 41, 0.05); }
+
+        footer { margin-top: 50px; color: #333; font-size: 0.7rem; text-align: center; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <header>
+        <h1>PROTOCOLO FÉNIX</h1>
+        <div class="status-badge">🛑 ESTADO: SISTEMA CAÍDO</div>
+    </header>
+
+    <!-- LEYENDA DE CONTEXTO (NUEVO) -->
+    <div class="context-legend">
+        <span class="context-title">¿QUÉ ES ESTO?</span>
+        Herramienta táctica de <strong>Emergencia Inmediata</strong>. Úsala solo en el baño tras un fallo mecánico (eyaculación precoz o pérdida de erección).
+        <br><br>
+        Sigue los <strong>5 PASOS</strong> para purgar la Prolactina y volver a la cama en 5 minutos.
+    </div>
+
+    <!-- MISIÓN BRIEFING (DESPLEGABLE) -->
+    <div class="mission-box">
+        <div class="mission-head" onclick="toggleMission()">
+            <span>📂 MANUAL DE OPERACIONES (OPCIONAL)</span>
+            <span id="mission-icon">▼</span>
+        </div>
+        <div class="mission-body" id="mission-body">
+            <p><strong>ALERTA ROJA:</strong> Tu cerebro ha liberado Prolactina (la hormona del sueño).</p>
+            <p><strong>OBJETIVO:</strong> Realizar un "Lavado de Sistema" rápido usando choque térmico y oxigenación.</p>
+            <p><strong>EJECUCIÓN:</strong> No pienses. Dale al botón rojo abajo y obedece.</p>
+        </div>
+    </div>
+
+    <!-- AUDIO -->
+    <div class="audio-card">
+        <span class="audio-label">🎧 BRIEFING DE MANDO (AUDIO)</span>
+        <audio controls>
+            <source src="audio_fenix.mp3" type="audio/mpeg">
+            Tu navegador no soporta el elemento de audio.
+        </audio>
+    </div>
+
+    <!-- PROTOCOLO WIZARD -->
+    <div class="protocol-container">
+
+        <!-- PASO 1: VERTICALIDAD -->
+        <div id="step-1" class="step-card active">
+            <div class="step-header">
+                <span class="step-number">01</span>
+                <span class="step-title">REINICIO FÍSICO</span>
+            </div>
+            <p class="instruction-text">
+                ⚠️ <strong>SAL DE LA CAMA AHORA.</strong>
+                <br><br>
+                Quedarte acostado libera oxitocina, que te dormirá. Ponte de pie. Camina al baño. Cierra la puerta.
+                <br><br>
+                ¿Estás de pie frente al espejo?
+            </p>
+            <button class="action-btn" onclick="nextStep(2)">SÍ, ESTOY EN POSICIÓN >></button>
+        </div>
+
+        <!-- PASO 2: SHOCK TÉRMICO -->
+        <div id="step-2" class="step-card">
+            <div class="step-header">
+                <span class="step-number">02</span>
+                <span class="step-title">SHOCK TÉRMICO</span>
+            </div>
+            <p class="instruction-text">
+                Abre el grifo. Agua <strong>HELADA</strong>.
+                <br><br>
+                Moja tu cara, nuca y genitales. El frío dispara la Adrenalina y anula la Prolactina. 
+                <br><br>
+                Aguanta el frío hasta que el reloj llegue a cero.
+            </p>
+            <div class="timer-box">
+                <div class="big-time" id="cold-timer">00:30</div>
+            </div>
+            <button class="action-btn" onclick="startColdTimer()">❄️ INICIAR CHOQUE (30s)</button>
+            <button id="btn-next-2" class="action-btn secondary" style="display:none; margin-top:10px;" onclick="nextStep(3)">CONTINUAR >></button>
+        </div>
+
+        <!-- PASO 3: HIPER-OXIGENACIÓN -->
+        <div id="step-3" class="step-card">
+            <div class="step-header">
+                <span class="step-number">03</span>
+                <span class="step-title">OXIGENACIÓN</span>
+            </div>
+            <p class="instruction-text">
+                Alcaliniza tu sangre para despejar la niebla mental post-orgasmo.
+                <br><br>
+                Sigue el ritmo visual: Inhala profundo (Nariz), Suelta de golpe (Boca). 10 veces.
+            </p>
+            <div class="breath-visual" id="breath-circle"></div>
+            <div style="text-align:center; font-weight:bold; margin-bottom:20px; font-size:1.5rem;" id="breath-count">0 / 10</div>
+            
+            <button class="action-btn" onclick="startBreathing()">💨 INICIAR RESPIRACIÓN</button>
+            <button id="btn-next-3" class="action-btn secondary" style="display:none; margin-top:10px;" onclick="nextStep(4)">CONTINUAR >></button>
+        </div>
+
+        <!-- PASO 4: COMBUSTIBLE -->
+        <div id="step-4" class="step-card">
+            <div class="step-header">
+                <span class="step-number">04</span>
+                <span class="step-title">RECARGA HIDRÁULICA</span>
+            </div>
+            <p class="instruction-text">
+                Has perdido fluidos. Tu presión sanguínea ha bajado. Necesitas volumen para la erección.
+                <br><br>
+                Bebe esto rápidamente:
+            </p>
+            
+            <div class="supplies-list">
+                <div class="supply-item" onclick="this.classList.toggle('checked')">
+                    <div class="supply-check"></div> 1 Vaso grande de Agua Fría
+                </div>
+                <div class="supply-item" onclick="this.classList.toggle('checked')">
+                    <div class="supply-check"></div> 1 Pizca generosa de SAL (Sodio)
+                </div>
+                <div class="supply-item" onclick="this.classList.toggle('checked')">
+                    <div class="supply-check"></div> Bébelo todo
+                </div>
+            </div>
+
+            <button class="action-btn" onclick="nextStep(5)">LISTO, COMBUSTIBLE DENTRO >></button>
+        </div>
+
+        <!-- PASO 5: RE-ENTRADA -->
+        <div id="step-5" class="step-card">
+            <div class="step-header">
+                <span class="step-number">05</span>
+                <span class="step-title">RE-ENTRADA</span>
+            </div>
+            <p class="instruction-text">
+                Vuelve a la habitación. <strong>PROHIBIDO PEDIR PERDÓN.</strong>
+                <br><br>
+                Tu sensibilidad está blindada. Tu mente está despejada.
+                <br><br>
+                <strong>LA TÁCTICA:</strong> Entra y enfócate en ELLA (Oral/Manual). No busques tu erección. Aparecerá sola en 2 minutos gracias al reset.
+            </p>
+            <div style="text-align:center; margin:30px 0; color: var(--success-color); font-size:1.2rem; font-weight:bold; border: 2px solid var(--success-color); padding:15px; border-radius:8px; background: rgba(0, 230, 118, 0.05);">
+                SISTEMA REINICIADO
+            </div>
+            <button class="action-btn" onclick="location.reload()">🔄 REINICIAR APP</button>
+        </div>
+
+    </div>
+
+    <!-- DESCARGA -->
+    <a href="protocolo_fenix.pdf" download class="download-link">
+        📂 DESCARGAR MANUAL COMPLETO (PDF)
+    </a>
+
+    <footer>
+        PROTOCOLO FÉNIX v1.2<br>Sistema de Recuperación Rápida
+    </footer>
+
+</div>
+
+<script>
+    // --- LÓGICA DE NAVEGACIÓN ---
+    function nextStep(stepNum) {
+        document.querySelectorAll('.step-card').forEach(c => c.classList.remove('active'));
+        document.getElementById('step-' + stepNum).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    function toggleMission() {
+        const body = document.getElementById('mission-body');
+        const icon = document.getElementById('mission-icon');
+        if (body.classList.contains('open')) {
+            body.classList.remove('open');
+            icon.innerText = '▼';
+        } else {
+            body.classList.add('open');
+            icon.innerText = '▲';
+        }
+    }
+
+    // --- PASO 2: TIMER FRÍO ---
+    let coldInterval;
+    function startColdTimer() {
+        const display = document.getElementById('cold-timer');
+        let timeLeft = 30; // 30 segundos de shock intenso
+        
+        // Feedback visual
+        if(navigator.vibrate) navigator.vibrate(50);
+        
+        clearInterval(coldInterval);
+        coldInterval = setInterval(() => {
+            timeLeft--;
+            display.innerText = `00:${timeLeft.toString().padStart(2, '0')}`;
+            
+            if (timeLeft <= 0) {
+                clearInterval(coldInterval);
+                display.innerText = "¡LISTO!";
+                display.style.color = "#00E676";
+                document.getElementById('btn-next-2').style.display = 'block';
+                if(navigator.vibrate) navigator.vibrate([200, 100, 200]);
+            }
+        }, 1000);
+    }
+
+    // --- PASO 3: RESPIRACIÓN ---
+    function startBreathing() {
+        const circle = document.getElementById('breath-circle');
+        const countDisplay = document.getElementById('breath-count');
+        let breaths = 0;
+        const totalBreaths = 10;
+
+        document.getElementById('btn-next-3').style.display = 'none';
+        
+        function breathCycle() {
+            if (breaths >= totalBreaths) {
+                countDisplay.innerText = "¡OXIGENADO!";
+                countDisplay.style.color = "#00E676";
+                document.getElementById('btn-next-3').style.display = 'block';
+                return;
+            }
+
+            // INHALA (Rápido y profundo - 2s)
+            circle.style.transition = "transform 2s cubic-bezier(0.1, 0.7, 1.0, 0.1), opacity 2s";
+            circle.style.transform = "scale(1.5)";
+            circle.style.opacity = "1";
+            
+            setTimeout(() => {
+                // EXHALA (De golpe - 1s)
+                circle.style.transition = "transform 0.5s ease-out, opacity 0.5s";
+                circle.style.transform = "scale(0.5)";
+                circle.style.opacity = "0.5";
+                
+                breaths++;
+                countDisplay.innerText = `${breaths} / ${totalBreaths}`;
+                
+                setTimeout(breathCycle, 1000); // Espera 1s antes del siguiente
+            }, 2000);
+        }
+
+        breathCycle();
+    }
+
+</script>
+
+</body>
+</html>
