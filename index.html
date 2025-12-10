@@ -4,14 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PROTOCOLO FÉNIX | Reinicio de Sistema</title>
+    <!-- 
+        ESTILO MONOCROMO ACHRONOS 
+        Diseñado para baja fatiga visual y alta legibilidad en situaciones de estrés.
+    -->
     <style>
         :root {
             --bg-color: #050505; /* Negro Profundo Industrial */
             --card-bg: #111111; /* Gris Carbón */
             --text-color: #e0e0e0;
-            --accent-color: #D90429; /* ROJO SANGRE (Marca Unificada) */
+            --accent-color: #D90429; /* ROJO SANGRE (Alerta/Acción) */
             --accent-glow: rgba(217, 4, 41, 0.4);
-            --success-color: #00E676; /* Verde Táctico */
+            --success-color: #00E676; /* Verde Táctico (Seguridad/Éxito) */
+            --success-glow: rgba(0, 230, 118, 0.4);
             --border-color: #222;
         }
 
@@ -25,7 +30,7 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            /* Fondo sutil tipo fibra de carbono/industrial */
+            /* Patrón de fibra de carbono sutil */
             background-image: repeating-linear-gradient(45deg, #0a0a0a 0, #0a0a0a 1px, transparent 0, transparent 50%);
             background-size: 20px 20px;
         }
@@ -36,7 +41,7 @@
             padding-bottom: 100px;
         }
 
-        /* HEADER */
+        /* HEADER TÁCTICO */
         header {
             text-align: center;
             margin-bottom: 25px;
@@ -51,7 +56,7 @@
             text-transform: uppercase;
             font-weight: 900;
             letter-spacing: 2px;
-            text-shadow: 0 0 20px var(--accent-color); /* Glow Rojo */
+            text-shadow: 0 0 20px var(--accent-color);
         }
         
         .status-badge {
@@ -69,7 +74,7 @@
             box-shadow: 0 0 10px var(--accent-glow);
         }
 
-        /* CONTEXTO / LEYENDA */
+        /* CONTEXTO */
         .context-legend {
             background: #0a0a0a;
             border: 1px solid #333;
@@ -81,7 +86,6 @@
             line-height: 1.5;
             color: #bbb;
         }
-        .context-legend strong { color: #fff; }
         .context-title {
             color: var(--accent-color);
             font-weight: bold;
@@ -92,7 +96,7 @@
             letter-spacing: 1px;
         }
 
-        /* MISIÓN BRIEFING (DESPLEGABLE) */
+        /* MISIÓN BRIEFING (ACORDEÓN) */
         .mission-box {
             background: #111;
             border: 1px solid #222;
@@ -114,7 +118,6 @@
             transition: color 0.3s;
         }
         .mission-head:hover { color: #fff; }
-        
         .mission-body {
             max-height: 0;
             overflow: hidden;
@@ -149,10 +152,9 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        /* Estilo sutil para reproductor */
         audio { width: 100%; height: 35px; margin-top: 5px; outline: none; filter: invert(0.9) sepia(1) saturate(0) hue-rotate(0deg); }
 
-        /* PROTOCOLO WIZARD */
+        /* WIZARD DE PASOS */
         .protocol-container {
             position: relative;
             min-height: 400px;
@@ -163,17 +165,10 @@
             border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 25px;
-            display: none; /* Oculto por defecto */
+            display: none;
             animation: slideIn 0.4s ease;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             position: relative;
-        }
-        .step-card::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 4px;
-            background: linear-gradient(90deg, var(--card-bg), var(--accent-color), var(--card-bg));
-            opacity: 0.5;
         }
         .step-card.active { display: block; }
 
@@ -194,9 +189,8 @@
         .step-title { font-size: 1.1rem; font-weight: bold; text-transform: uppercase; text-align: right; color: #fff; letter-spacing: 1px; }
 
         .instruction-text { font-size: 1rem; line-height: 1.5; margin-bottom: 25px; color: #ddd; }
-        .instruction-text strong { color: var(--accent-color); }
-
-        /* CONTROLES DEL PASO */
+        
+        /* BOTONES DE ACCIÓN */
         .action-btn {
             background: linear-gradient(135deg, #a3001b 0%, #d90429 100%);
             color: #fff;
@@ -220,29 +214,89 @@
         .action-btn.secondary { background: #222; color: #aaa; box-shadow: none; border: 1px solid #333; }
         .action-btn.secondary:hover { color: #fff; border-color: #555; }
 
-        /* ELEMENTOS ESPECÍFICOS */
+        /* ELEMENTOS DINÁMICOS */
         .timer-box { text-align: center; margin: 20px 0; }
         .big-time { font-size: 4rem; font-weight: 700; color: #fff; font-family: monospace; text-shadow: 0 0 20px rgba(255,255,255,0.1); }
         
+        /* RESPIRACIÓN (MODIFICADO POR USUARIO) */
+        .breath-container {
+            text-align: center;
+            margin: 30px 0;
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
         .breath-visual {
-            width: 180px; height: 180px;
+            width: 150px; 
+            height: 150px;
             border-radius: 50%;
-            background: var(--accent-color);
-            margin: 30px auto;
-            opacity: 0.2;
-            transform: scale(1);
-            box-shadow: 0 0 30px var(--accent-color);
-            /* Flex para centrar número */
+            background: #222; /* Estado neutro */
+            border: 4px solid #333;
             display: flex;
             justify-content: center;
             align-items: center;
             color: #fff;
-            font-size: 4rem;
+            font-size: 3.5rem;
             font-weight: 900;
             font-family: monospace;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            transition: all 0.5s ease;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        
+        .cycle-counter {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+            width: 100%;
+            text-align: center;
+        }
+        .cycle-counter span { color: #fff; }
+
+        .breath-label {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            min-height: 1.5em;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        .breath-sublabel {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            font-weight: normal;
         }
 
+        /* Estados de Respiración */
+        .breath-visual.inhale {
+            background-color: var(--success-color); /* VERDE */
+            box-shadow: 0 0 40px var(--success-glow);
+            border-color: #fff;
+            transform: scale(1.3);
+            color: #000; /* Texto negro sobre verde para contraste */
+        }
+        
+        .breath-visual.exhale {
+            background-color: var(--accent-color); /* ROJO */
+            box-shadow: 0 0 40px var(--accent-glow);
+            border-color: #fff;
+            transform: scale(0.8);
+            color: #fff;
+        }
+
+        /* CHECKLIST */
         .supplies-list { text-align: left; background: #0f0f0f; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #222; }
         .supply-item { display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #222; cursor: pointer; transition: background 0.2s; }
         .supply-item:last-child { border-bottom: none; }
@@ -251,7 +305,7 @@
         .supply-check { width: 20px; height: 20px; border: 2px solid #555; margin-right: 15px; border-radius: 4px; }
         .supply-item.checked .supply-check { background: var(--accent-color); border-color: var(--accent-color); }
 
-        /* DESCARGA */
+        /* LINK DESCARGA */
         .download-link {
             display: block;
             text-align: center;
@@ -281,33 +335,34 @@
         <div class="status-badge">🛑 ESTADO: SISTEMA CAÍDO</div>
     </header>
 
-    <!-- LEYENDA DE CONTEXTO (NUEVO) -->
+    <!-- CONTEXTO -->
     <div class="context-legend">
         <span class="context-title">¿QUÉ ES ESTO?</span>
-        Herramienta táctica de <strong>Emergencia Inmediata</strong>. Úsala solo en el baño tras un fallo mecánico (eyaculación precoz o pérdida de erección).
+        Herramienta de <strong>Reinicio de Sistema</strong>. Úsala SOLO tras un fallo mecánico (eyaculación precoz o pérdida de erección).
         <br><br>
-        Sigue los <strong>5 PASOS</strong> para purgar la Prolactina y volver a la cama en 5 minutos.
+        Sigue los pasos para purgar la Prolactina y reactivar la Dopamina en 5 minutos.
     </div>
 
-    <!-- MISIÓN BRIEFING (DESPLEGABLE) -->
+    <!-- MISIÓN -->
     <div class="mission-box">
         <div class="mission-head" onclick="toggleMission()">
-            <span>📂 MANUAL DE OPERACIONES (OPCIONAL)</span>
+            <span>📂 INTELIGENCIA DE MISIÓN</span>
             <span id="mission-icon">▼</span>
         </div>
         <div class="mission-body" id="mission-body">
-            <p><strong>ALERTA ROJA:</strong> Tu cerebro ha liberado Prolactina (la hormona del sueño).</p>
-            <p><strong>OBJETIVO:</strong> Realizar un "Lavado de Sistema" rápido usando choque térmico y oxigenación.</p>
-            <p><strong>EJECUCIÓN:</strong> No pienses. Dale al botón rojo abajo y obedece.</p>
+            <p><strong>DIAGNÓSTICO:</strong> Bomba química de Prolactina activada. Tu sistema está en "Modo Sueño".</p>
+            <p><strong>OBJETIVO:</strong> Realizar un "Lavado de Sistema" rápido usando choque térmico y oxigenación forzada.</p>
+            <p><strong>EJECUCIÓN:</strong> No pienses. Dale al botón rojo abajo y obedece las órdenes.</p>
         </div>
     </div>
 
-    <!-- AUDIO -->
+    <!-- AUDIO (Placeholder) -->
     <div class="audio-card">
         <span class="audio-label">🎧 BRIEFING DE MANDO (AUDIO)</span>
+        <!-- Se usa un reproductor nativo simple -->
         <audio controls>
-            <source src="audio_fenix.mp3" type="audio/mpeg">
-            Tu navegador no soporta el elemento de audio.
+            <source src="#" type="audio/mpeg">
+            Tu sistema no soporta audio.
         </audio>
     </div>
 
@@ -341,7 +396,7 @@
                 <br><br>
                 Moja tu cara, nuca y genitales. El frío dispara la Adrenalina y anula la Prolactina. 
                 <br><br>
-                Aguanta el frío hasta que el reloj llegue a cero.
+                Aguanta el impacto hasta que el reloj llegue a cero.
             </p>
             <div class="timer-box">
                 <div class="big-time" id="cold-timer">00:30</div>
@@ -350,24 +405,36 @@
             <button id="btn-next-2" class="action-btn secondary" style="display:none; margin-top:10px;" onclick="nextStep(3)">CONTINUAR >></button>
         </div>
 
-        <!-- PASO 3: HIPER-OXIGENACIÓN -->
+        <!-- PASO 3: HIPER-OXIGENACIÓN (CORREGIDO) -->
         <div id="step-3" class="step-card">
             <div class="step-header">
                 <span class="step-number">03</span>
                 <span class="step-title">OXIGENACIÓN</span>
             </div>
             <p class="instruction-text">
-                Alcaliniza tu sangre para despejar la niebla mental post-orgasmo.
+                Alcaliniza tu sangre para despejar la niebla mental.
                 <br><br>
-                Sigue el ritmo visual del círculo. <strong>El número indica la repetición.</strong>
+                Sigue el ritmo visual.
                 <br>
-                <strong>EXPANDE</strong> (Inhala) / <strong>CONTRAE</strong> (Suelta de golpe).
+                <strong>VERDE = INHALA (Llenar)</strong>
+                <br>
+                <strong>ROJO = EXHALA (Soltar)</strong>
             </p>
             
-            <!-- CÍRCULO CON CONTADOR INTEGRADO -->
-            <div class="breath-visual" id="breath-circle">LISTO</div>
+            <!-- CONTENEDOR DE RESPIRACIÓN -->
+            <div class="breath-container">
+                <div class="cycle-counter" id="cycle-counter">SERIE -- / 10</div>
+                
+                <div class="breath-visual" id="breath-circle">
+                    <span id="breath-number">GO</span>
+                </div>
+                
+                <div class="breath-label" id="breath-text">
+                    PREPARADO
+                </div>
+            </div>
             
-            <button class="action-btn" onclick="startBreathing()">💨 INICIAR RESPIRACIÓN</button>
+            <button class="action-btn" onclick="startBreathing()">💨 INICIAR SECUENCIA</button>
             <button id="btn-next-3" class="action-btn secondary" style="display:none; margin-top:10px;" onclick="nextStep(4)">CONTINUAR >></button>
         </div>
 
@@ -391,7 +458,7 @@
                     <div class="supply-check"></div> 1 Pizca generosa de SAL (Sodio)
                 </div>
                 <div class="supply-item" onclick="this.classList.toggle('checked')">
-                    <div class="supply-check"></div> Bébelo todo
+                    <div class="supply-check"></div> Bébelo todo de un trago
                 </div>
             </div>
 
@@ -420,12 +487,12 @@
     </div>
 
     <!-- DESCARGA -->
-    <a href="protocolo_fenix.pdf" download class="download-link">
+    <a href="#" class="download-link">
         📂 DESCARGAR MANUAL COMPLETO (PDF)
     </a>
 
     <footer>
-        PROTOCOLO FÉNIX v1.3<br>Sistema de Recuperación Rápida
+        PROTOCOLO FÉNIX v2.1<br>Sistema de Recuperación Táctica
     </footer>
 
 </div>
@@ -450,13 +517,12 @@
         }
     }
 
-    // --- PASO 2: TIMER FRÍO ---
+    // --- PASO 2: TIMER FRÍO (30s) ---
     let coldInterval;
     function startColdTimer() {
         const display = document.getElementById('cold-timer');
-        let timeLeft = 30; // 30 segundos de shock intenso
+        let timeLeft = 30; 
         
-        // Feedback visual
         if(navigator.vibrate) navigator.vibrate(50);
         
         clearInterval(coldInterval);
@@ -474,45 +540,100 @@
         }, 1000);
     }
 
-    // --- PASO 3: RESPIRACIÓN MEJORADA ---
-    function startBreathing() {
-        const circle = document.getElementById('breath-circle');
-        let breaths = 0;
-        const totalBreaths = 10;
+    // --- PASO 3: RESPIRACIÓN MEJORADA (SEMÁFORO) ---
+    // Variable global para controlar la respiración y evitar duplicados
+    let breathingActive = false;
+    let inhaleTimer = null;
+    let exhaleTimer = null;
 
-        document.getElementById('btn-next-3').style.display = 'none';
+    function startBreathing() {
+        // Evita múltiples clics
+        if (breathingActive) return;
+        breathingActive = true;
+
+        const circle = document.getElementById('breath-circle');
+        const label = document.getElementById('breath-text');
+        const numberDisplay = document.getElementById('breath-number');
+        const cycleCounter = document.getElementById('cycle-counter'); // Nuevo contador
+        const btnNext = document.getElementById('btn-next-3');
+        const startBtn = document.querySelector('#step-3 .action-btn'); // Botón de inicio
         
-        function breathCycle() {
-            if (breaths >= totalBreaths) {
-                circle.innerText = "✅";
-                circle.style.opacity = "1";
-                circle.style.transform = "scale(1)";
-                document.getElementById('btn-next-3').style.display = 'block';
-                if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
+        // Ocultar botón de inicio para evitar re-clicks
+        if(startBtn) startBtn.style.display = 'none';
+        btnNext.style.display = 'none';
+        
+        let totalCycles = 10;
+        let currentCycle = 0;
+        
+        // Función para ejecutar un ciclo completo (Inhala + Exhala)
+        function runCycle() {
+            if (currentCycle >= totalCycles) {
+                // Fin de la sesión
+                circle.className = "breath-visual"; // Reset clases
+                circle.style.borderColor = "var(--success-color)";
+                numberDisplay.innerText = "✅";
+                label.innerHTML = "OXIGENACIÓN COMPLETADA";
+                cycleCounter.innerHTML = `SERIE <span>${totalCycles}</span> / ${totalCycles}`;
+                
+                btnNext.style.display = 'block';
+                if(navigator.vibrate) navigator.vibrate([200, 200]);
+                breathingActive = false;
                 return;
             }
 
-            breaths++;
+            currentCycle++;
+            // Actualizar contador visual
+            cycleCounter.innerHTML = `SERIE <span>${currentCycle}</span> / ${totalCycles}`;
+
+            // --- FASE 1: INHALA (VERDE) - 3 Segundos ---
+            circle.className = "breath-visual inhale"; // Aplica clase verde y grande
+            label.innerHTML = `INHALA PROFUNDO <span class="breath-sublabel">(NARIZ)</span>`;
+            label.style.color = "var(--success-color)";
             
-            // INHALA (Rápido y profundo - 2s)
-            circle.innerText = breaths; // Muestra el número
-            circle.style.transition = "transform 2s cubic-bezier(0.1, 0.7, 1.0, 0.1), opacity 2s";
-            circle.style.transform = "scale(1.5)";
-            circle.style.opacity = "1";
-            circle.style.color = "#fff";
-            
-            setTimeout(() => {
-                // EXHALA (De golpe - 1s)
-                circle.style.transition = "transform 0.5s ease-out, opacity 0.5s";
-                circle.style.transform = "scale(0.8)";
-                circle.style.opacity = "0.7";
-                
-                // Espera antes del siguiente ciclo
-                setTimeout(breathCycle, 1000); 
-            }, 2000);
+            let inhaleCount = 1;
+            numberDisplay.innerText = inhaleCount; 
+
+            // Limpiamos cualquier timer anterior por seguridad
+            if(inhaleTimer) clearInterval(inhaleTimer);
+
+            // Intervalo para contar 1, 2, 3
+            inhaleTimer = setInterval(() => {
+                inhaleCount++;
+                if (inhaleCount <= 3) {
+                    numberDisplay.innerText = inhaleCount;
+                } else {
+                    clearInterval(inhaleTimer);
+                    // --- FASE 2: EXHALA (ROJO) - 2 Segundos ---
+                    startExhale();
+                }
+            }, 1000);
         }
 
-        breathCycle();
+        function startExhale() {
+            circle.className = "breath-visual exhale"; // Aplica clase roja y pequeña
+            label.innerHTML = `SUELTA DE GOLPE <span class="breath-sublabel" style="font-weight:900;">(POR LA BOCA)</span>`;
+            label.style.color = "var(--accent-color)";
+            
+            let exhaleCount = 1;
+            numberDisplay.innerText = exhaleCount;
+
+            if(exhaleTimer) clearInterval(exhaleTimer);
+
+            // Intervalo para contar 1, 2
+            exhaleTimer = setInterval(() => {
+                exhaleCount++;
+                if (exhaleCount <= 2) {
+                    numberDisplay.innerText = exhaleCount;
+                } else {
+                    clearInterval(exhaleTimer);
+                    // Siguiente ciclo
+                    runCycle();
+                }
+            }, 1000);
+        }
+
+        // Iniciar primer ciclo
+        runCycle();
     }
 
 </script>
