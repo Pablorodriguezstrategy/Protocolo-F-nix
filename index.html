@@ -225,13 +225,22 @@
         .big-time { font-size: 4rem; font-weight: 700; color: #fff; font-family: monospace; text-shadow: 0 0 20px rgba(255,255,255,0.1); }
         
         .breath-visual {
-            width: 150px; height: 150px;
+            width: 180px; height: 180px;
             border-radius: 50%;
             background: var(--accent-color);
-            margin: 20px auto;
+            margin: 30px auto;
             opacity: 0.2;
             transform: scale(1);
             box-shadow: 0 0 30px var(--accent-color);
+            /* Flex para centrar número */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 4rem;
+            font-weight: 900;
+            font-family: monospace;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
 
         .supplies-list { text-align: left; background: #0f0f0f; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #222; }
@@ -350,10 +359,13 @@
             <p class="instruction-text">
                 Alcaliniza tu sangre para despejar la niebla mental post-orgasmo.
                 <br><br>
-                Sigue el ritmo visual: Inhala profundo (Nariz), Suelta de golpe (Boca). 10 veces.
+                Sigue el ritmo visual del círculo. <strong>El número indica la repetición.</strong>
+                <br>
+                <strong>EXPANDE</strong> (Inhala) / <strong>CONTRAE</strong> (Suelta de golpe).
             </p>
-            <div class="breath-visual" id="breath-circle"></div>
-            <div style="text-align:center; font-weight:bold; margin-bottom:20px; font-size:1.5rem;" id="breath-count">0 / 10</div>
+            
+            <!-- CÍRCULO CON CONTADOR INTEGRADO -->
+            <div class="breath-visual" id="breath-circle">LISTO</div>
             
             <button class="action-btn" onclick="startBreathing()">💨 INICIAR RESPIRACIÓN</button>
             <button id="btn-next-3" class="action-btn secondary" style="display:none; margin-top:10px;" onclick="nextStep(4)">CONTINUAR >></button>
@@ -413,7 +425,7 @@
     </a>
 
     <footer>
-        PROTOCOLO FÉNIX v1.2<br>Sistema de Recuperación Rápida
+        PROTOCOLO FÉNIX v1.3<br>Sistema de Recuperación Rápida
     </footer>
 
 </div>
@@ -462,10 +474,9 @@
         }, 1000);
     }
 
-    // --- PASO 3: RESPIRACIÓN ---
+    // --- PASO 3: RESPIRACIÓN MEJORADA ---
     function startBreathing() {
         const circle = document.getElementById('breath-circle');
-        const countDisplay = document.getElementById('breath-count');
         let breaths = 0;
         const totalBreaths = 10;
 
@@ -473,27 +484,31 @@
         
         function breathCycle() {
             if (breaths >= totalBreaths) {
-                countDisplay.innerText = "¡OXIGENADO!";
-                countDisplay.style.color = "#00E676";
+                circle.innerText = "✅";
+                circle.style.opacity = "1";
+                circle.style.transform = "scale(1)";
                 document.getElementById('btn-next-3').style.display = 'block';
+                if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
                 return;
             }
 
+            breaths++;
+            
             // INHALA (Rápido y profundo - 2s)
+            circle.innerText = breaths; // Muestra el número
             circle.style.transition = "transform 2s cubic-bezier(0.1, 0.7, 1.0, 0.1), opacity 2s";
             circle.style.transform = "scale(1.5)";
             circle.style.opacity = "1";
+            circle.style.color = "#fff";
             
             setTimeout(() => {
                 // EXHALA (De golpe - 1s)
                 circle.style.transition = "transform 0.5s ease-out, opacity 0.5s";
-                circle.style.transform = "scale(0.5)";
-                circle.style.opacity = "0.5";
+                circle.style.transform = "scale(0.8)";
+                circle.style.opacity = "0.7";
                 
-                breaths++;
-                countDisplay.innerText = `${breaths} / ${totalBreaths}`;
-                
-                setTimeout(breathCycle, 1000); // Espera 1s antes del siguiente
+                // Espera antes del siguiente ciclo
+                setTimeout(breathCycle, 1000); 
             }, 2000);
         }
 
